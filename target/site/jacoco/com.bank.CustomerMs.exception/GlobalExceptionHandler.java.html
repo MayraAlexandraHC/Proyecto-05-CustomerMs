@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CustomerMs</a> &gt; <a href="index.source.html" class="el_package">com.bank.CustomerMs.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.bank.CustomerMs.exception;
+
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+<span class="fc" id="L16">public class GlobalExceptionHandler {</span>
+
+    @ExceptionHandler(ClienteException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleClienteException(ClienteException ex) {
+<span class="fc" id="L20">        ErrorResponse error = ErrorResponse.builder()</span>
+<span class="fc" id="L21">                .timestamp(LocalDateTime.now())</span>
+<span class="fc" id="L22">                .message(ex.getMessage())</span>
+<span class="fc" id="L23">                .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="fc" id="L24">                .build();</span>
+<span class="fc" id="L25">        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleDuplicateKeyException(DuplicateKeyException ex) {
+<span class="nc" id="L30">        ErrorResponse error = ErrorResponse.builder()</span>
+<span class="nc" id="L31">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L32">                .message(&quot;Valor duplicado: El DNI ya existe en el sistema&quot;)</span>
+<span class="nc" id="L33">                .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="nc" id="L34">                .build();</span>
+<span class="nc" id="L35">        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; handleValidationExceptions(MethodArgumentNotValidException ex) {
+<span class="fc" id="L40">        Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L41">        ex.getBindingResult().getAllErrors().forEach((error) -&gt; {</span>
+<span class="fc" id="L42">            String fieldName = ((FieldError) error).getField();</span>
+<span class="fc" id="L43">            String errorMessage = error.getDefaultMessage();</span>
+<span class="fc" id="L44">            errors.put(fieldName, errorMessage);</span>
+<span class="fc" id="L45">        });</span>
+<span class="fc" id="L46">        return new ResponseEntity&lt;&gt;(errors, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @lombok.Data
+    @lombok.Builder
+    public static class ErrorResponse {
+        private LocalDateTime timestamp;
+
+        private String message;
+
+        private int status;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

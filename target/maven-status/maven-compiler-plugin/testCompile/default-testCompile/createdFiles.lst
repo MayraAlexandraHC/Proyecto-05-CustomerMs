@@ -1,0 +1,5 @@
+com\bank\CustomerMs\service\ClienteServiceImplTest.class
+com\bank\CustomerMs\controller\ClienteControllerTest.class
+com\bank\CustomerMs\exception\GlobalExceptionHandlerTest.class
+com\bank\CustomerMs\CustomerMsApplicationTests.class
+com\bank\CustomerMs\client\CuentaClientTest.class

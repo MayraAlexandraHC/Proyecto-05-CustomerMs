@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+CustomerMs,com.bank.CustomerMs.client,CuentaClient,0,21,0,0,0,6,0,2,0,2
+CustomerMs,com.bank.CustomerMs.service.impl,ClienteServiceImpl,42,133,10,12,6,28,10,10,2,7
+CustomerMs,com.bank.CustomerMs.controller,ClienteController,0,42,0,0,0,10,0,5,0,5
+CustomerMs,com.bank.CustomerMs.config,RestTemplateConfig,0,6,0,0,0,2,0,2,0,2
+CustomerMs,com.bank.CustomerMs,CustomerMsApplication,5,3,0,0,2,1,1,1,1,1
+CustomerMs,com.bank.CustomerMs.exception,GlobalExceptionHandler,16,49,0,0,6,14,1,4,1,4
+CustomerMs,com.bank.CustomerMs.exception,ClienteException,0,4,0,0,0,2,0,1,0,1

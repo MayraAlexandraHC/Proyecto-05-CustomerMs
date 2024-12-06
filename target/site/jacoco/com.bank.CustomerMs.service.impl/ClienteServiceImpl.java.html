@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CustomerMs</a> &gt; <a href="index.source.html" class="el_package">com.bank.CustomerMs.service.impl</a> &gt; <span class="el_source">ClienteServiceImpl.java</span></div><h1>ClienteServiceImpl.java</h1><pre class="source lang-java linenums">package com.bank.CustomerMs.service.impl;
+
+import com.bank.CustomerMs.client.CuentaClient;
+import com.bank.CustomerMs.exception.ClienteException;
+import com.bank.CustomerMs.model.Cliente;
+import com.bank.CustomerMs.repository.ClienteRepository;
+import com.bank.CustomerMs.service.ClienteService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ClienteServiceImpl implements ClienteService {
+    private final ClienteRepository clienteRepository;
+
+    private final CuentaClient cuentaClient;
+
+    @Override
+    public Cliente crearCliente(Cliente cliente) {
+<span class="fc" id="L22">        validarDatosCliente(cliente);</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (clienteRepository.existsByDni(cliente.getDni())) {</span>
+<span class="fc" id="L24">            throw new ClienteException(&quot;Ya existe un cliente con este DNI&quot;);</span>
+        }
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">        if (clienteRepository.existsByEmail(cliente.getEmail())) {</span>
+<span class="nc" id="L27">            throw new ClienteException(&quot;Ya existe un cliente con este correo&quot;);</span>
+        }
+<span class="fc" id="L29">        return clienteRepository.save(cliente);</span>
+    }
+
+    @Override
+    public List&lt;Cliente&gt; listarClientes() {
+<span class="fc" id="L34">        return clienteRepository.findAll();</span>
+    }
+
+    @Override
+    public Cliente obtenerClientePorId(Integer id) {
+<span class="fc" id="L39">        return clienteRepository.findById(id)</span>
+<span class="fc" id="L40">                .orElseThrow(() -&gt; new ClienteException(&quot;Cliente no encontrado&quot;));</span>
+    }
+
+    @Override
+    public Cliente actualizarCliente(Integer id, Cliente cliente) {
+<span class="fc" id="L45">        Cliente clienteExistente = clienteRepository.findById(id)</span>
+<span class="pc" id="L46">                .orElseThrow(() -&gt; new ClienteException(&quot;Cliente no encontrado&quot;));</span>
+
+<span class="fc" id="L48">        validarDatosCliente(cliente);</span>
+
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (!clienteExistente.getDni().equals(cliente.getDni()) &amp;&amp;</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">                clienteRepository.existsByDni(cliente.getDni())) {</span>
+<span class="nc" id="L52">            throw new ClienteException(&quot;Ya existe un cliente con este DNI&quot;);</span>
+        }
+
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (!clienteExistente.getDni().equals(cliente.getDni()) &amp;&amp;</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">                clienteRepository.existsByEmail(cliente.getEmail())) {</span>
+<span class="nc" id="L57">            throw new ClienteException(&quot;Ya existe un cliente con este correo&quot;);</span>
+        }
+
+<span class="fc" id="L60">        clienteExistente.setNombre(cliente.getNombre());</span>
+<span class="fc" id="L61">        clienteExistente.setApellido(cliente.getApellido());</span>
+<span class="fc" id="L62">        clienteExistente.setDni(cliente.getDni());</span>
+<span class="fc" id="L63">        clienteExistente.setEmail(cliente.getEmail());</span>
+
+<span class="fc" id="L65">        return clienteRepository.save(clienteExistente);</span>
+    }
+
+    @Override
+    public void eliminarCliente(Integer id) {
+<span class="fc" id="L70">        Cliente cliente = clienteRepository.findById(id)</span>
+<span class="pc" id="L71">                .orElseThrow(() -&gt; new ClienteException(&quot;Cliente no encontrado&quot;));</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (cuentaClient.tieneCuentasActivas(id)) {</span>
+<span class="fc" id="L74">            throw new ClienteException(&quot;No se puede eliminar el cliente porque tiene cuentas activas&quot;);</span>
+        }
+
+<span class="fc" id="L77">        clienteRepository.deleteById(id);</span>
+<span class="fc" id="L78">    }</span>
+
+    private void validarDatosCliente(Cliente cliente) {
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">        if (cliente.getDni() == null || !cliente.getDni().matches(&quot;^[0-9]{8}$&quot;)) {</span>
+<span class="fc" id="L82">            throw new ClienteException(&quot;El DNI debe contener exactamente 8 dígitos numéricos&quot;);</span>
+        }
+<span class="pc bpc" id="L84" title="2 of 4 branches missed.">        if (cliente.getEmail() == null || !cliente.getEmail().matches(&quot;^[A-Za-z0-9+_.-]+@(.+)$&quot;)) {</span>
+<span class="nc" id="L85">            throw new ClienteException(&quot;Formato de email inválido&quot;);</span>
+        }
+<span class="fc" id="L87">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
